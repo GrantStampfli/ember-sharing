@@ -1,14 +1,18 @@
 {
-  "name": "ember-sharing",
+  "name": "swap-tacular",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+   "scripts": {
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report $(if [ \"$TRAVIS\" ]; then echo lcovonly; else echo html; fi) -- && if [ \"$TRAVIS\" ]; then cat ./coverage/lcov.info | ./node_modules/.bin/coveralls; fi"
+  },
   "dependencies": {
     "jquery": "~2.1.0",
     "bootstrap-sass": "~3.0.2",
     "ember": "^1.5.1",
     "handlebars": "^1.2.1",
-    "ember-data": "^1.0.0-beta.8"
+    "ember-data": "^1.0.0-beta.8",
+    "admit-one-ember": "~0.1.4"
   },
   "devDependencies": {
     "ember-mocha-adapter": "teddyzeenny/ember-mocha-adapter#master"

@@ -18,7 +18,7 @@
   "trailing": true,
   "smarttabs": true,
   "globals": {
-    "EmberSharing": true,
+    "SwapTacular": true,
     "Ember": true,
     "DS": true,
 
