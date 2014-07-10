@@ -10,11 +10,6 @@ var favicon = require('serve-favicon');
 var config = require('./config');
 
 var app = express();
-var config = require('./config');
-
-var knexConfig = require('./config/knexfile.js')[config.env];
-var knex = require('knex')(knexConfig);
-var bookshelf = require('bookshelf')(knex);
 
 if (config.env === 'development') {
   var connectLivereload = require('connect-livereload');
@@ -33,19 +28,9 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 
 
-var User, Token;
-User = bookshelf.Model.extend({
-  tokens: function() {
-    return this.hasMany(Token);
-  },
-  tableName: 'users'
-});
-Token = bookshelf.Model.extend({
-  user: function() {
-    return this.belongsTo(User);
-  },
-  tableName: 'tokens'
-});
+var models = require('./models'),
+    User = models.User,
+    Post = models.Post;
 
 var admit = require('admit-one')('bookshelf', {
   bookshelf: { modelClass: User }
@@ -63,11 +48,32 @@ api.post('/sessions', admit.authenticate, function(req, res) {
   res.json({ session: req.auth.user });
 });
 
-// all routes defined from here on will require authorization
+api.get('/posts', function(req, res){
+  Post.fetchAll({ withRelated: 'user' })
+  .then(function(collection) {
+    var users = [];
+    var posts = collection.toJSON().map(function(model) {
+      delete model.user.passwordDigest;
+      users.push(model.user);
+      model.user = model.userID;
+      delete model.userID;
+      return model;
+    });
+    res.json({posts: posts, users: users });
+  }).done();
+});
+
+// all routes defined below this line will require authorization
 api.use(admit.authorize);
 api.delete('/sessions/current', admit.invalidate, function(req, res) {
   if (req.auth.user) { throw new Error('Session not invalidated.'); }
   res.json({ status: 'ok' });
+});
+
+api.post('/posts', function(req, res){
+  var user = req.auth.db.user;
+  console.log(user.get('id'));
+  //TODO: write about some stuff
 });
 
 // application routes

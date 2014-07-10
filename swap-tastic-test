@@ -1,0 +1,24 @@
+\c
+create database "swap-tacular"
+;
+.\list
+select all from swap-tacular-test
+;
+select * from swap-tacular-test;
+.\list
+select * from swap-tacular-test
+;
+;
+;
+;
+select * from swap-tacular-test
+;
+\d swap-tacular-test
+\dl
+\c swap-tacular-test
+\c swap-tacular
+\c swap-tacular-test
+select * from swap-tacular-test
+;
+.\dl
+\s swap-tastic-test;
